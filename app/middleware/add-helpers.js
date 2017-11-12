@@ -13,12 +13,12 @@
 //   next();
 // }
 
-let SQLFunction = require('../utils/connect-to-db');
+let sql = require('../utils/connect-to-db');
 let rendr = require('../utils/proper-render');
 
-module.exports = function(req, res, next) {
+module.exports = (req, res, next) => {
   // Requests
-  req.sql = SQLFunction.bind(this, req);
+  req.sql = sql;
 
   // Responses
   res.rendr = rendr.bind(this, res);

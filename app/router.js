@@ -2,12 +2,15 @@
 
 exports.getRouter = function getRouter(router, controller) {
   router.route('/')
-    .get(controller.controller1.subController1.foo);
+    .get(controller.pages.index.get);
+  router.route('/about')
+    .get(controller.pages.about.get);
+
   router.route('/login/')
-    .get(controller.controller1.subController2.foo);
+    .get(controller.actions.login);
   router.route('/signup/')
-    .get(controller.controller2.signup);
+    .get(controller.actions.signup);
   router.route('/user/:id')
-    .get(controller.controller2.getUser);
+    .get(controller.actions.getUser);
   return router;
 };

@@ -7,7 +7,7 @@ let dbConfig = require('pg-connection-string').parse(process.env.DATABASE_URL ||
 dbConfig.max = 3; dbConfig.idleTimeoutMillis = 3000;
 let pgPool = new pg.Pool(dbConfig);
 
-module.exports = function(req, sql, variables) {
+module.exports = function(sql, variables) {
   if (variables && variables.showQuery) {console.log(sql);}
 
   return new Promise((resolve, reject) => {
