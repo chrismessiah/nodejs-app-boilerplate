@@ -1,22 +1,18 @@
 'use strict';
 
-let Promise = require('bluebird');
+const { Pool } = require('pg');
+const connectionString = process.env.DATABASE_URL || 'postgresql://root@localhost:5432/coming_soon';
+const pool = new Pool({ connectionString: connectionString });
 
-let pg = require("pg");
-let dbConfig = require('pg-connection-string').parse(process.env.DATABASE_URL || 'postgres//root@localhost:5432/db');
-dbConfig.max = 3; dbConfig.idleTimeoutMillis = 3000;
-let pgPool = new pg.Pool(dbConfig);
+module.exports = async (sql, opts) => {
+  if (opts && opts.showQuery) {console.log(sql);}
 
-module.exports = function(sql, variables) {
-  if (variables && variables.showQuery) {console.log(sql);}
-
-  return new Promise((resolve, reject) => {
-    pgPool.connect((err, client, done) => {
-      if (err) reject();
-      client.query(sql,[], (err, result) => {
-        done(); if (err) reject();
-        resolve(result);
-      });
-    });
-  });
+  let res;
+  try {
+    res = await pool.query(sql, opts);
+    await pool.end()
+  } catch (e) {
+    console.log(e);
+  }
+  return res;
 };
