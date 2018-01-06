@@ -1,26 +1,16 @@
-// Handy addons
-
-// var jshint = require('gulp-jshint');
-// var uglify = require('gulp-uglify');
-// var imagemin = require('gulp-imagemin');
-// var cache = require('gulp-cache');
-
 const SASS_PATH = 'assets/styles';
 const SCRIPT_PATH = 'assets/scripts';
 
 // *************************** IMPORTS ***********************************
 
 // Basic tools
-var gulp = require('gulp');
-var open = require('gulp-open');
+import gulp from 'gulp';
 var gutil = require('gulp-util');
 var notify = require('gulp-notify');
-var autoprefixer = require('gulp-autoprefixer');
 var rename = require('gulp-rename');
 var concat = require('gulp-concat');
 var del = require('del');
 var minify = require('gulp-minify');
-var pump = require('pump');
 var sourcemaps = require('gulp-sourcemaps');
 var uglify = require('gulp-uglify');
 
@@ -30,10 +20,10 @@ var cssnano = require('gulp-cssnano');
 var stripCssComments = require('gulp-strip-css-comments');
 
 // for JS
+var babelify = require('babelify');
 var browserify = require('browserify');
 var source = require('vinyl-source-stream');
 var buffer = require('vinyl-buffer');
-var reactify = require('reactify');
 
 // *************************** IMPORTS ***********************************
 
@@ -51,7 +41,6 @@ gulp.task('compile-sass', function() {
 gulp.task('concat-css',['compile-sass'], function() {
   return gulp.src([
     'public/master.sass.css',
-    //'node_modules/sweetalert/src/sweetalert.css',
   ])
   .pipe(concat('master.css'))
   .pipe(gulp.dest('public'));
@@ -73,21 +62,17 @@ gulp.task('minify-css',['compile-sass', 'concat-css'], function() {
 // **************************** JS  *******************************************
 
 gulp.task('javascript', function () {
-  // set up the browserify instance on a task basis
-  var b = browserify({
+  return browserify({
     entries: 'assets/scripts/master.js',
     debug: true,
-    // defining transforms here will avoid crashing your stream
-    transform: [reactify]
-  });
-
-  return b.bundle()
-    .pipe(source('master.min.js'))
-    .pipe(buffer())
-    .pipe(sourcemaps.init({loadMaps: true}))
-    .pipe(uglify()) // comment this to debug javascript
-    .on('error', gutil.log)
-    .pipe(gulp.dest('./public/'));
+    transform: [babelify]
+  })
+  .bundle()
+  .pipe(source('master.min.js'))
+  .pipe(buffer())
+  .pipe(sourcemaps.init({loadMaps: true}))
+  .pipe(uglify())
+  .pipe(gulp.dest('./public/'));
 });
 
 // **************************** JS  *******************************************
@@ -106,6 +91,6 @@ gulp.task('default', ['styles', 'scripts', 'cleanup', 'watch']);
 
 gulp.task('watch', function() {
   gulp.watch(`${SASS_PATH}/*.sass`, ['styles', 'cleanup']);
-  gulp.watch([`${SCRIPT_PATH}/*.js`], ['scripts', 'cleanup']);
+  gulp.watch(['bower_components/*', `${SCRIPT_PATH}/*.js`], ['scripts', 'cleanup']);
   gulp.watch(['public/master.html', 'public/master.min.js', 'public/master.min.css']);
 });
