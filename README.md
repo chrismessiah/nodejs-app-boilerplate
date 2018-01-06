@@ -1,29 +1,6 @@
-# sample-node-api
+# nodejs-app-boilerplate
 
-_Becuase why start from scratch?_
-
-## Structure
-
-The structure of the app is as follows
-
-```
-app/
-––– controllers/
-–––––– controller1/
-––––––––––– method1.js
-––––––––––– method2.js
-–––––– controller2/
-––––––––––– sub-controller1
-––––––––––––––– ...
-––––––––––– sub-controller2
-––––––––––––––– ...
-––– middlware/
-–––––– index.js
-––– utils/
-––– router.js
-server.js
-...
-```
+My boilerplate for Node.js powered multi-page sites with Gulp, Sass, Browserify, ES6, Postgres, Handlebars and Chai-tests.
 
 ## Controllers
 
